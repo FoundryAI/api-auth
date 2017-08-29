@@ -1,6 +1,6 @@
 Foundry.ai Api Auth
 ===================
-
+This module exposes connect middleware for Foundry.ai APIs to authenticate requests.
 ```
 npm install --save @foundry.ai/api-auth
 ```
