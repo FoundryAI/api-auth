@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+  - '6'
+  - '7'
+  - '8'
+install:
+  - npm update -g npm
+  - npm install -g typescript
+  - npm install
+script:
+  - npm test
+
+deploy:
+  provider: npm
+  email: engineering@foundry.ai
+  api_key:
+    secure: "ScA+1On9/UYA54drBwJ9aTbPgTmROND+tY+CJMKLoNixpOJasqyAjc8aMSExIq9ZRsbGdkM5PDZ9SQajqUtfXVfifkS4uSeXj2FSmVdGBc4c/GSdEnqiiH4tCtn7SEBk5B5ftNJC43SWyA/X6uE6NbGrrD3S1OyACW7StKe9SBnYko4PYyFNqmcJ8vjyK03uDSRvTlTPphSD04GbPvancA/w/7L/HNRwyNim4YAIicw40KkUdHl+7GU8Tqo34V2Hwl22PIBpVxRtpAFeg4Dy+4zjizVef/srVHdPXYfxoeOSIdnPLhIAamNI0Y8l0dNPrpnvVjOpnFuMwbgmSMIlg6Jnx2/eafCqIIakQ6QWgZgZhEJMPLwonP2nPZx08RYXyYInn+aPLGTs4E25D27rt+V48UZJ10VzW4iNB7A5UgKDA8WJz1xStCOVMpvohynTSdT+EYeJd1bqof7tMr4SMcbFiyYJhT/3T6RTmA1zmtjY4mhaWPeZzOagAjE8PnliuavdrTL45Elh/7v9e7WZjv1gL6CrNg10gyQ0FhpDMKJKeu9qR8HGZbYdvjYZKPjVdUlXNQutdyJ54Pv8dJ79aT8Hwq/0rwi4iFQDWbyDtREaFFLhWtAHeleSjqZBJswSOf0ohOk+PflN60aSMoYgY/anLF7DzyTdCbjauocFr4U="
+  on:
+    tags: true
