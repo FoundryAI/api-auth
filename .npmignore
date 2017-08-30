@@ -1,0 +1,21 @@
+#tests
+test
+coverage
+
+#build tools
+.travis.yml
+.jenkins.yml
+.codeclimate.yml
+.nyc_output
+gruntfile.js
+
+#linters
+.jscsrc
+.jshintrc
+.eslintrc*
+tslint.json
+
+#editor settings
+.idea
+.editorconfig
+tsconfig.json
