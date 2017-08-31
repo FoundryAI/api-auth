@@ -21,7 +21,7 @@ export default function (config: ApiAuthConfiguration) {
                 next();
             })
             .catch(err => {
-                next(toResJson(err));
+                next(toResJson(err.error));
             })
 
     }
