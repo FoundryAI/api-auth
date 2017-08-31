@@ -8,23 +8,60 @@ import {ApiAuthConfiguration, Factory} from './util/ClientConfigFactory';
 export default function (config: ApiAuthConfiguration) {
     const authConfig = Factory(config);
     return function (req: Request, res: Response, next: NextFunction) {
-        const requestOptions = assignIn(authConfig.request, {
-            method: 'GET',
-            uri: authConfig.authEndpoint,
-            qs: {
-                access_token: req.query.access_token
-            }
-        });
-        RequestPromise(requestOptions)
-            .then(data => {
-                set(req, 'auth', data);
-                next();
-            })
-            .catch(err => {
-                next(toResJson(err.error));
-            })
+        Promise.resolve(tokenFromReq(req))
+        .then(token => {
+            if (!token) throw new AuthenticationError('Missing authentication token');
+            const requestOptions = assignIn(authConfig.request, {
+                method: 'GET',
+                uri: authConfig.authEndpoint,
+                qs: {
+                    access_token: token
+                }
+            });
+            RequestPromise(requestOptions)
+                .then(data => {
+                    set(req, 'auth', data);
+                    next();
+                })
+                .catch(err => {
+                    next(toResJson(err.error));
+                })
+        })
+        .catch(err => next(err));
 
     }
+}
+
+export function tokenFromReq(req: Request): string {
+    let token = '';
+    if (req.headers && req.headers.authorization) {
+        const authorization = <string>req.headers.authorization;
+        const parts = authorization.split(' ');
+        if (parts.length == 2) {
+            const [scheme, credentials] = parts;
+
+            if (/^Bearer$/i.test(scheme)) {
+                token = credentials;
+            }
+        } else {
+            throw new BadRequestError('Invalid authentication scheme');
+        }
+    }
+
+    if (req.body && req.body.access_token) {
+        if (token) {
+            throw new BadRequestError('Multiple access tokens attached to request');
+        }
+        token = req.body.access_token;
+    }
+
+    if (req.query && req.query.access_token) {
+        if (token) {
+            throw new BadRequestError('Multiple access tokens attached to request');
+        }
+        token = req.query.access_token;
+    }
+    return token;
 }
 
 export function toResJson(err: InternalError | AuthenticationError | BadRequestError | ForbiddenError | NotFoundError | RateLimitError) {
