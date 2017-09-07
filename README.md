@@ -41,13 +41,29 @@ router.get('/test', (req, res, next) => {
   //   scope: '*'
   // }
 
-  if (req.auth && req.auth.scope.includes('myResource:read')) {
-    return protectedData;
-  } else {
-    return genericData
+  let userId = req.auth.userId;
+
+  if (req.params.userId) {
+    if (req.auth.scope.includes('admin')) {
+      userId = req.params.userId;
+    } else if (req.params.userId != userId) {
+      throw PermissionError('cannot access data');
+    }
   }
+
+  return getData(userId);
 });
 ```
+
+## Options
+
+| Param | Description |
+|-------|-------------|
+| `authEndpoint`* | What endpoint should the middlewhere validate the token against e.g. `https://auth.example.com/oauth2/authorization` |
+| `request`       | Options passed to the [`request`][request-link] library e.g. `{ timeout: 30000 }` |
+| `errorOnMiss`   | Should the middleware throw an `AuthenticationError` when an invalid/no token is given |
+
+NOTE: `*` Indicates required field
 
 ## Details
 
@@ -57,3 +73,5 @@ the specified endpoint.
 
 NOTE: invalid tokens do not cause errors, but if multiple tokens are detected a
 `BadRequestError` will be raised.
+
+[request-link]: https://github.com/request/request#requestoptions-callback

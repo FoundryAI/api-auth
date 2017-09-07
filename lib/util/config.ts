@@ -7,13 +7,15 @@ const version = require('../../package.json').version;
 export interface Config {
     authEndpoint: string;
     request?: object;
+    errorOnMiss?: boolean;
 }
 
 export const schema = {
     authEndpoint: joi.string().uri(),
     request: joi.object({
         strictSSL: joi.boolean()
-    })
+    }),
+    errorOnMiss: joi.boolean()
 };
 
 export function validate (config: Config): Boolean {

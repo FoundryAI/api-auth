@@ -2,6 +2,7 @@ import * as RequestPromise from 'request-promise';
 import { set, assignIn } from 'lodash';
 import { NextFunction, Request, Response } from 'express';
 import { ValidationError } from 'express-validation';
+import { AuthenticationError } from '@foundry-ai/api-errors';
 
 import { Config, validate, applyDefaults } from './util/config';
 import { tokenFromReq } from './util/tokens';
@@ -20,7 +21,12 @@ export default function (config: Config) {
     return function (req: Request, res: Response, next: NextFunction) {
         Promise.resolve(tokenFromReq(req))
         .then((token) => {
-            if (!token) return next();
+            if (!token) {
+                if (authConfig.errorOnMiss)
+                    throw new AuthenticationError('Missing authentication token');
+
+                return next();
+            }
 
             RequestPromise(requestOptions(token))
                 .then((data) => {
