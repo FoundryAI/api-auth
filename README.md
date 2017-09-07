@@ -63,7 +63,7 @@ router.get('/test', (req, res, next) => {
 | `request`       | Options passed to the [`request`][request-link] library e.g. `{ timeout: 30000 }` |
 | `errorOnMiss`   | Should the middleware throw an `AuthenticationError` when an invalid/no token is given |
 
-NOTE: `*` Indicates required field
+> `*` Indicates required field
 
 ## Details
 
@@ -71,7 +71,6 @@ This middleware will check the request's `Authorization` header for a `Bearer`
 token and the query params for an `access_token` that it then validates against
 the specified endpoint.
 
-NOTE: invalid tokens do not cause errors, but if multiple tokens are detected a
-`BadRequestError` will be raised.
+NOTE: If multiple tokens are detected a `BadRequestError` will be raised.
 
 [request-link]: https://github.com/request/request#requestoptions-callback
