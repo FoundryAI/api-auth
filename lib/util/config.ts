@@ -4,21 +4,29 @@ import * as joi from 'joi';
 const version = require('../../package.json').version;
 
 
-export interface ApiAuthConfiguration {
+export interface Config {
     authEndpoint: string;
     request?: object;
+    errorOnMiss?: boolean;
 }
 
-export const Schema = {
+export const schema = {
     authEndpoint: joi.string().uri(),
     request: joi.object({
         strictSSL: joi.boolean()
-    })
+    }),
+    errorOnMiss: joi.boolean()
 };
 
-export function Factory (config: ApiAuthConfiguration): ApiAuthConfiguration {
-    const validation = joi.validate(config, Schema);
+export function validate (config: Config): Boolean {
+    const validation = joi.validate(config, schema);
+
     if (validation.error) throw new Error(validation.error.annotate());
+
+    return true;
+}
+
+export function applyDefaults (config: Config): Config {
     return defaultsDeep(config, {
         request: {
             // By default, require API SSL cert to be valid
@@ -39,7 +47,6 @@ export function Factory (config: ApiAuthConfiguration): ApiAuthConfiguration {
                 'User-Agent': `Foundry.ai API Auth v${version}`
             },
             timeout: 10000
-
         }
     });
 }
