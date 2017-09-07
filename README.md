@@ -13,7 +13,7 @@ const apiAuth = require('@foundry-ai/api-auth');
 const app = require('express');
 
 app.use(apiAuth({
-  authEndpoint: 'https://auth.myapp.com/v1/oauth2/authorize'
+  authEndpoint: 'https://auth.myapp.com/v1/oauth2/authorization'
 }));
 ```
 
@@ -21,7 +21,7 @@ app.use(apiAuth({
 If authorization is successful any data returned from your auth endpoint will be attached to the request and made available via `req.auth`
 ```js
 app.use(apiAuth({
-  authEndpoint: 'https://auth.myapp.com/v1/oauth2/authorize'
+  authEndpoint: 'https://auth.myapp.com/v1/oauth2/authorization'
 }));
 
 app.get('/test', (req, res, next) => {

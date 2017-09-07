@@ -24,14 +24,14 @@ class ApiAuthSpec {
 
     before() {
         nock('https://api.foundry.ai')
-            .get(`/v1/auth/oauth2/authorize`)
+            .get(`/v1/auth/oauth2/authorization`)
             .query({
                 access_token: accessToken
             })
             .reply(200, authInfo);
 
         nock('https://api.foundry.ai')
-            .get('/v1/auth/oauth2/authorize')
+            .get('/v1/auth/oauth2/authorization')
             .replyWithError({ type: 'authentication_error', status: 401, message: 'Unauthorized' });
 
         this.app = express();
@@ -40,7 +40,7 @@ class ApiAuthSpec {
     @test
     use() {
         const config = {
-            authEndpoint: 'https://api.foundry.ai/v1/auth/oauth2/authorize'
+            authEndpoint: 'https://api.foundry.ai/v1/auth/oauth2/authorization'
         };
         const middleware = ApiAuth(config);
         expect(middleware).to.be.a('function');
@@ -58,7 +58,7 @@ class ApiAuthSpec {
     @test
     error() {
         const config = {
-            authEndpoint: 'https://api.foundry.ai/v1/auth/oauth2/authorize'
+            authEndpoint: 'https://api.foundry.ai/v1/auth/oauth2/authorization'
         };
         const middleware = ApiAuth(config);
         expect(middleware).to.be.a('function');
