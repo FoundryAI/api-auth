@@ -24,8 +24,25 @@ export default function (config: ApiAuthConfiguration) {
                     next();
                 })
                 .catch(err => {
-                    if (err.statusCode === 401) next(new AuthenticationError());
-                    else next(toResJson(err.error));
+                    if (err.error && err.error.type && err.error.status && err.error.message) next(toResJson(err.error));
+                    else {
+                        switch (err.statusCode) {
+                            case 400:
+                                next(new BadRequestError());
+                                break;
+                            case 401:
+                                next(new AuthenticationError());
+                                break;
+                            case 403:
+                                next(new ForbiddenError());
+                                break;
+                            case 429:
+                                next(new RateLimitError());
+                                break;
+                            default:
+                                next(err);
+                        }
+                    }
                 })
         })
         .catch(err => next(err));
