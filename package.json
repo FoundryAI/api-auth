@@ -1,6 +1,6 @@
 {
   "name": "@foundry-ai/api-auth",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Foundry.ai API auth middleware",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
