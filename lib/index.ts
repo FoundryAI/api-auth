@@ -24,7 +24,8 @@ export default function (config: ApiAuthConfiguration) {
                     next();
                 })
                 .catch(err => {
-                    next(toResJson(err.error));
+                    if (err.statusCode === 401) next(new AuthenticationError());
+                    else next(toResJson(err.error));
                 })
         })
         .catch(err => next(err));

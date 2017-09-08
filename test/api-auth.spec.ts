@@ -16,6 +16,7 @@ const authInfo = {
     scope: '*'
 };
 const accessToken = chance.guid();
+const statusOnlyAccessToken = chance.guid();
 
 @suite
 class ApiAuthSpec {
@@ -29,6 +30,13 @@ class ApiAuthSpec {
                 access_token: accessToken
             })
             .reply(200, authInfo);
+
+        nock('https://api.foundry.ai')
+            .get('/v1/auth/oauth2/authorization')
+            .query({
+                access_token: statusOnlyAccessToken
+            })
+            .reply(401);
 
         nock('https://api.foundry.ai')
             .get('/v1/auth/oauth2/authorization')
@@ -70,6 +78,23 @@ class ApiAuthSpec {
 
         const request = supertest.agent(this.app);
         return request.get(`/test`)
+            .expect(401);
+    }
+
+    @test
+    status() {
+        const config = {
+            authEndpoint: 'https://api.foundry.ai/v1/auth/oauth2/authorization'
+        };
+        const middleware = ApiAuth(config);
+        expect(middleware).to.be.a('function');
+        this.app.use('/', middleware);
+        this.app.get(`/test`, (req, res, next) => {
+            res.sendStatus(400);
+        });
+
+        const request = supertest.agent(this.app);
+        return request.get(`/test?access_token=${statusOnlyAccessToken}`)
             .expect(401);
     }
 }
