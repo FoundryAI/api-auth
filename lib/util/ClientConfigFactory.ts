@@ -1,4 +1,5 @@
-import { defaultsDeep } from 'lodash';
+import { get, defaultsDeep } from 'lodash';
+import * as http from 'http';
 import * as https from 'https';
 import * as joi from 'joi';
 const version = require('../../package.json').version;
@@ -24,7 +25,7 @@ export function Factory (config: ApiAuthConfiguration): ApiAuthConfiguration {
             // By default, require API SSL cert to be valid
             strictSSL: true,
             // Use an agent with keep-alive enabled to avoid performing SSL handshake per connection
-            agentClass: https.Agent,
+            agentClass: get(config, 'request.strictSSL', true) ? https.Agent : http.Agent,
             agentOptions: {
                 keepAlive: true
             },
