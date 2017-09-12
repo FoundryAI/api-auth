@@ -64,6 +64,25 @@ class ApiAuthSpec {
     }
 
     @test
+    bearer() {
+        const config = {
+            authEndpoint: 'https://api.foundry.ai/v1/auth/oauth2/authorization'
+        };
+        const middleware = ApiAuth(config);
+        expect(middleware).to.be.a('function');
+        this.app.use('/', middleware);
+        this.app.get('/test', (req, res, next) => {
+            if (_.isEqual(req['auth'], authInfo)) res.sendStatus(200);
+            else res.sendStatus(500);
+        });
+
+        const request = supertest.agent(this.app);
+        return request.get(`/test`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .expect(200);
+    }
+
+    @test
     error() {
         const config = {
             authEndpoint: 'https://api.foundry.ai/v1/auth/oauth2/authorization'
