@@ -97,4 +97,29 @@ class ApiAuthSpec {
         return request.get(`/test?access_token=${statusOnlyAccessToken}`)
             .expect(401);
     }
+
+    @test
+    http() {
+        nock('http://local.api.hud.ai:3000')
+            .get(`/v1/auth/oauth2/authorization`)
+            .query({
+                access_token: accessToken
+            })
+            .reply(200, authInfo);
+
+        const config = {
+            authEndpoint: 'http://local.api.hud.ai:3000/v1/auth/oauth2/authorization'
+        };
+        const middleware = ApiAuth(config);
+        expect(middleware).to.be.a('function');
+        this.app.use('/', middleware);
+        this.app.get('/test', (req, res, next) => {
+            if (_.isEqual(req['auth'], authInfo)) res.sendStatus(200);
+            else res.sendStatus(500);
+        });
+
+        const request = supertest.agent(this.app);
+        return request.get(`/test?access_token=${accessToken}`)
+            .expect(200);
+    }
 }
