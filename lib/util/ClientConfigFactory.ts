@@ -1,6 +1,7 @@
 import { get, defaultsDeep } from 'lodash';
 import * as http from 'http';
 import * as joi from 'joi';
+import * as https from 'https';
 const version = require('../../package.json').version;
 
 
@@ -21,13 +22,13 @@ export function Factory (config: ApiAuthConfiguration): ApiAuthConfiguration {
     if (validation.error) throw new Error(validation.error.annotate());
     return defaultsDeep(config, {
         request: {
-            // By default, require API SSL cert to be valid
-            strictSSL: true,
-            // Use an agent with keep-alive enabled to avoid performing SSL handshake per connection
-            agentClass: http.Agent,
-            agentOptions: {
-                keepAlive: true
-            },
+            // // By default, require API SSL cert to be valid
+            // strictSSL: true,
+            // // Use an agent with keep-alive enabled to avoid performing SSL handshake per connection
+            // agentClass: https.Agent,
+            // agentOptions: {
+            //     keepAlive: true
+            // },
             // Encode requests as JSON. Encode the response as well if JSON is returned.
             json: true,
             // Do not encode the response as a string, since the response could be a file. return Buffers instead.
