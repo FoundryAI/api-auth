@@ -89,3 +89,11 @@ export function toResJson(err: InternalError | AuthenticationError | BadRequestE
         message: err.message
     };
 }
+
+declare global {
+    namespace Express {
+        interface Request {
+            auth: { userId: string, scope: string[] }
+        }
+    }
+}
