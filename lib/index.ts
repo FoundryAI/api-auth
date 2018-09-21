@@ -93,7 +93,7 @@ export function toResJson(err: InternalError | AuthenticationError | BadRequestE
 declare global {
     namespace Express {
         interface Request {
-            auth: { userId: string, scope: string }
+            auth: { userId: string, scope: string, role: string }
         }
     }
 }
